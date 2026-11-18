@@ -8,19 +8,22 @@ Game.registerMod("SugarLumpEditor", {
         button.onclick = function () {
             const amount = prompt("How many sugar lumps do you want?");
 
-            if (amount !== null && !isNaN(amount) && amount.trim() !== "") {
+            if (amount !== null && amount.trim() !== "" && !isNaN(amount)) {
                 Game.lumps = Number(amount);
                 Game.Notify("Sugar Lumps", "Sugar lumps updated!", []);
             }
         };
 
-        document.getElementById("statsButton").after(button);
+        const statsButton = document.getElementById("statsButton");
+
+        if (statsButton) {
+            statsButton.parentNode.insertBefore(button, statsButton.nextSibling);
+        }
     },
 
     save: function () {
         return "";
     },
 
-    load: function (str) {
-    }
+    load: function (str) {}
 });
