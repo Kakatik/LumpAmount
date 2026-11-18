@@ -45,8 +45,8 @@ Game.registerMod("SugarLumpEditor", {
                 Game.lumps = Number(amount);
 
                 Game.Notify(
-                    "Sugar Lumps",
-                    "Sugar lumps updated!",
+                    "You cheater!",
+                    "Do cheated sugar lumps taste any better now?",
                     []
                 );
             }
