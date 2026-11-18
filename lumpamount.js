@@ -9,27 +9,31 @@ Game.registerMod("SugarLumpEditor", {
 
         const rect = stats.getBoundingClientRect();
 
-        button.style.position = "fixed";
-        button.style.left = (rect.right + 5) + "px";
-        button.style.top = rect.top + "px";
-        button.style.zIndex = "100000";
+        Object.assign(button.style, {
+            position: "fixed",
+            left: (rect.right + 5) + "px",
+            top: rect.top + "px",
+            zIndex: "100000",
+            backgroundColor: "black",
+            border: "1px solid yellow",
+            color: "yellow",
+            padding: "5px 10px",
+            cursor: "pointer",
+            textAlign: "center"
+        });
 
-        button.style.backgroundColor = "black";
-        button.style.border = "1px solid yellow";
-        button.style.color = "yellow";
-        button.style.padding = "5px 10px";
-        button.style.cursor = "pointer";
-        button.style.textAlign = "center";
+        button.onmouseenter = () => button.style.backgroundColor = "#333";
+        button.onmouseleave = () => button.style.backgroundColor = "black";
 
-        button.onmouseenter = function () {
-            button.style.backgroundColor = "#333";
-        };
+        let cooldownEnabled = false;
 
-        button.onmouseleave = function () {
-            button.style.backgroundColor = "black";
-        };
+        // Keep cooldown reset while enabled
+        Game.registerHook("logic", function () {
+            if (cooldownEnabled) {
+                Game.lumpRefill = 0;
+            }
+        });
 
-        // Menu
         button.onclick = function () {
             let menu = document.getElementById("sugarLumpMenu");
 
@@ -41,16 +45,18 @@ Game.registerMod("SugarLumpEditor", {
             menu = document.createElement("div");
             menu.id = "sugarLumpMenu";
 
-            menu.style.position = "fixed";
-            menu.style.left = (rect.right + 5) + "px";
-            menu.style.top = (rect.bottom + 5) + "px";
-            menu.style.backgroundColor = "black";
-            menu.style.border = "1px solid yellow";
-            menu.style.color = "yellow";
-            menu.style.padding = "10px";
-            menu.style.zIndex = "100001";
-            menu.style.fontSize = "12px";
-            menu.style.minWidth = "180px";
+            Object.assign(menu.style, {
+                position: "fixed",
+                left: (rect.right + 5) + "px",
+                top: (rect.bottom + 5) + "px",
+                backgroundColor: "black",
+                border: "1px solid yellow",
+                color: "yellow",
+                padding: "10px",
+                zIndex: "100001",
+                fontSize: "12px",
+                minWidth: "180px"
+            });
 
             // Sugar lump amount
             const amountButton = document.createElement("div");
@@ -61,12 +67,8 @@ Game.registerMod("SugarLumpEditor", {
             amountButton.onclick = function () {
                 const amount = prompt("How many sugar lumps do you want?");
 
-                if (
-                    amount !== null &&
-                    amount.trim() !== "" &&
-                    Number.isFinite(Number(amount)) &&
-                    Number(amount) >= 0
-                ) {
+                if (amount !== null && amount.trim() !== "" &&
+                    Number.isFinite(Number(amount)) && Number(amount) >= 0) {
                     Game.lumps = Number(amount);
 
                     Game.Notify(
@@ -79,7 +81,7 @@ Game.registerMod("SugarLumpEditor", {
 
             menu.appendChild(amountButton);
 
-            // Cooldown checkbox
+            // Permanent cooldown checkbox
             const label = document.createElement("label");
             label.style.cursor = "pointer";
 
@@ -87,14 +89,10 @@ Game.registerMod("SugarLumpEditor", {
             checkbox.type = "checkbox";
 
             checkbox.onchange = function () {
-                if (checkbox.checked) {
-                    Game.lumpRefill = 0;
+                cooldownEnabled = checkbox.checked;
 
-                    Game.Notify(
-                        "Cooldown reset!",
-                        "Sugar Lump cooldown has been refilled.",
-                        []
-                    );
+                if (cooldownEnabled) {
+                    Game.lumpRefill = 0;
                 }
             };
 
@@ -104,7 +102,6 @@ Game.registerMod("SugarLumpEditor", {
             );
 
             menu.appendChild(label);
-
             document.body.appendChild(menu);
         };
 
