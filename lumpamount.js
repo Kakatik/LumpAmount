@@ -7,7 +7,6 @@ Game.registerMod("SugarLumpEditor", {
         button.className = "option";
         button.textContent = "Sugar Lumps";
 
-        // Position next to Stats
         const rect = stats.getBoundingClientRect();
 
         button.style.position = "fixed";
@@ -15,7 +14,6 @@ Game.registerMod("SugarLumpEditor", {
         button.style.top = rect.top + "px";
         button.style.zIndex = "100000";
 
-        // Button appearance
         button.style.backgroundColor = "black";
         button.style.border = "1px solid yellow";
         button.style.color = "yellow";
@@ -23,7 +21,6 @@ Game.registerMod("SugarLumpEditor", {
         button.style.cursor = "pointer";
         button.style.textAlign = "center";
 
-        // Hover effect
         button.onmouseenter = function () {
             button.style.backgroundColor = "#333";
         };
@@ -32,24 +29,83 @@ Game.registerMod("SugarLumpEditor", {
             button.style.backgroundColor = "black";
         };
 
-        // Sugar lump editor
+        // Menu
         button.onclick = function () {
-            const amount = prompt("How many sugar lumps do you want?");
+            let menu = document.getElementById("sugarLumpMenu");
 
-            if (
-                amount !== null &&
-                amount.trim() !== "" &&
-                Number.isFinite(Number(amount)) &&
-                Number(amount) >= 0
-            ) {
-                Game.lumps = Number(amount);
-
-                Game.Notify(
-                    "You cheater!",
-                    "Do cheated sugar lumps taste any better now?",
-                    []
-                );
+            if (menu) {
+                menu.remove();
+                return;
             }
+
+            menu = document.createElement("div");
+            menu.id = "sugarLumpMenu";
+
+            menu.style.position = "fixed";
+            menu.style.left = (rect.right + 5) + "px";
+            menu.style.top = (rect.bottom + 5) + "px";
+            menu.style.backgroundColor = "black";
+            menu.style.border = "1px solid yellow";
+            menu.style.color = "yellow";
+            menu.style.padding = "10px";
+            menu.style.zIndex = "100001";
+            menu.style.fontSize = "12px";
+            menu.style.minWidth = "180px";
+
+            // Sugar lump amount
+            const amountButton = document.createElement("div");
+            amountButton.textContent = "Set Sugar Lumps";
+            amountButton.style.cursor = "pointer";
+            amountButton.style.marginBottom = "10px";
+
+            amountButton.onclick = function () {
+                const amount = prompt("How many sugar lumps do you want?");
+
+                if (
+                    amount !== null &&
+                    amount.trim() !== "" &&
+                    Number.isFinite(Number(amount)) &&
+                    Number(amount) >= 0
+                ) {
+                    Game.lumps = Number(amount);
+
+                    Game.Notify(
+                        "You cheater!",
+                        "Do cheated sugar lumps taste any better now?",
+                        []
+                    );
+                }
+            };
+
+            menu.appendChild(amountButton);
+
+            // Cooldown checkbox
+            const label = document.createElement("label");
+            label.style.cursor = "pointer";
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+
+            checkbox.onchange = function () {
+                if (checkbox.checked) {
+                    Game.lumpRefill = 0;
+
+                    Game.Notify(
+                        "Cooldown reset!",
+                        "Sugar Lump cooldown has been refilled.",
+                        []
+                    );
+                }
+            };
+
+            label.appendChild(checkbox);
+            label.appendChild(
+                document.createTextNode(" Refill Sugar Lump Cooldown")
+            );
+
+            menu.appendChild(label);
+
+            document.body.appendChild(menu);
         };
 
         document.body.appendChild(button);
