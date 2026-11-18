@@ -5,6 +5,11 @@ Game.registerMod("SugarLumpEditor", {
         button.className = "option";
         button.textContent = "Sugar Lumps";
 
+        button.style.position = "absolute";
+        button.style.left = "310px";
+        button.style.top = "0px";
+        button.style.zIndex = "100";
+
         button.onclick = function () {
             const amount = prompt("How many sugar lumps do you want?");
 
@@ -14,11 +19,7 @@ Game.registerMod("SugarLumpEditor", {
             }
         };
 
-        const statsButton = document.getElementById("statsButton");
-
-        if (statsButton) {
-            statsButton.parentNode.insertBefore(button, statsButton.nextSibling);
-        }
+        document.body.appendChild(button);
     },
 
     save: function () {
